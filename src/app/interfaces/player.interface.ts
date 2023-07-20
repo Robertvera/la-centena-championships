@@ -4,4 +4,5 @@ export interface Player {
     mpr: number;
     wins: number;
     games: number;
+    percent: number;
 }

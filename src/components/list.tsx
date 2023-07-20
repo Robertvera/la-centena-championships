@@ -1,20 +1,19 @@
 import { usePlayers } from "@/app/hooks/use-players.hook";
 import { Player } from "@/app/interfaces/player.interface";
 import { FC } from "react";
+import Spinner from "./spinner";
 
 const List: FC = () => {
   const { players } = usePlayers();
-  if (!players) null;
-
-  const getPercent = (wins: number, games: number): string => {
-    return ((wins / games) * 100).toFixed(2);
-  };
+  if (!players) {
+    return <Spinner />; 
+  }
 
   return (
-    <div className="w-full">
+    <div className="w-11/12 text-lg">
       <table className="w-full">
         <tbody>
-          <tr>
+          <tr className="bg-red-500 text-gray-50">
             <th>Player</th>
             <th>%</th>
             <th>Wins</th>
@@ -22,15 +21,12 @@ const List: FC = () => {
             <th>~MPR</th>
           </tr>
           {players?.map((player: Player) => {
-            const { id, name, wins, games, mpr } = player;
+            const { id, name, wins, games, mpr, percent } = player;
 
             return (
-              <tr key={id}>
-                <td className="text-center">{name}</td>
-                <td className="text-center">{`${getPercent(
-                  wins,
-                  games
-                )} %`}</td>
+              <tr key={id} className="border-y border-slate-400">
+                <td className="font-bold">{name}</td>
+                <td className="text-center">{`${percent} %`}</td>
                 <td className="text-center">{wins}</td>
                 <td className="text-center">{games}</td>
                 <td className="text-center">{mpr.toFixed(2)}</td>

@@ -6,10 +6,14 @@ import { GameData, GameDataPlayer } from "@/app/interfaces/game-data.interface";
 import { usePlayers } from "@/app/hooks/use-players.hook";
 import { Player } from "@/app/interfaces/player.interface";
 import { PostgrestSingleResponse } from "@supabase/postgrest-js";
+import { hasInvalidMpr } from "@/app/utils/players-utils";
+import Toast from "./toast";
 
 interface Props {
   sendGameData: (gameData: GameData) => Promise<void>;
-  updatePlayersData: (gameData: GameData) => PromiseLike<PostgrestSingleResponse<any>>[]
+  updatePlayersData: (
+    gameData: GameData
+  ) => PromiseLike<PostgrestSingleResponse<any>>[];
 }
 
 const Modal: FC<Props> = ({ sendGameData, updatePlayersData }) => {
@@ -18,10 +22,15 @@ const Modal: FC<Props> = ({ sendGameData, updatePlayersData }) => {
   const [playerMpr, setPlayerMpr] = useState<GameDataPlayer[]>([]);
   const [winner, setWinner] = useState<string>("");
   const { players } = usePlayers();
+  const [inputError, setInputError] = useState<boolean>(false);
 
   const handleSaveButton = async () => {
     const winnerPlayer = getWinner(winner);
-    setGameData({ winner: winnerPlayer?.name, players: playerMpr });
+    if (!winnerPlayer || hasInvalidMpr(playerMpr)) {
+      setInputError(true);
+    } else {
+      setGameData({ winner: winnerPlayer?.name, players: playerMpr });
+    }
   };
 
   useEffect(() => {
@@ -82,6 +91,7 @@ const Modal: FC<Props> = ({ sendGameData, updatePlayersData }) => {
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="w-full relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  {inputError && <Toast inputError={setInputError} />}
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
                       <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"></div>

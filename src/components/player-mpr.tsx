@@ -12,7 +12,13 @@ interface Props {
   winner: string;
 }
 
-const PlayerMpr: FC<Props> = ({ name, setPlayerMpr, playerMpr, setWinner, winner }) => {
+const PlayerMpr: FC<Props> = ({
+  name,
+  setPlayerMpr,
+  playerMpr,
+  setWinner,
+  winner,
+}) => {
   const playerIsNew = !playerMpr.some((player) => player.name === name);
 
   const updateMpr = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +39,7 @@ const PlayerMpr: FC<Props> = ({ name, setPlayerMpr, playerMpr, setWinner, winner
 
   const setGameWinner = () => {
     setWinner(name);
-  }
+  };
 
   return (
     <div className="border p-3 bg-green-200">
@@ -44,7 +50,7 @@ const PlayerMpr: FC<Props> = ({ name, setPlayerMpr, playerMpr, setWinner, winner
           </div>
           <div className="mb-1" onClick={setGameWinner}>
             <img
-              src={ winner === name ? fullTrophy.src : emptyTrophy.src}
+              src={winner === name ? fullTrophy.src : emptyTrophy.src}
               alt="empty-trophy"
               width="25px"
             />

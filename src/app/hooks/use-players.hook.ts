@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Player } from "../interfaces/player.interface";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { atom, useAtom } from "jotai";
+import { getPercent, sortPlayers } from "../utils/players-utils";
 
 export const playersAtom = atom<Player[] | undefined>(undefined);
 
@@ -13,7 +13,11 @@ export const usePlayers = (supabaseInstance?: SupabaseClient) => {
       const { data } = await supabaseInstance.from("Player").select("*");
 
       if (data) {
-        setPlayers(data);
+        data.forEach((player) => {
+          player.percent = getPercent(player.wins, player.games);
+        });
+
+        setPlayers(sortPlayers(data));
       }
     }
   };
